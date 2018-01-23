@@ -1,0 +1,32 @@
+Option Compare Database
+Option Explicit
+
+
+Public Sub GetFieldNameSample()
+    Dim myDB As dao.Database
+    Dim myTables As dao.TableDef
+    Dim myTableDef  As dao.TableDef
+    Dim myFields As dao.Field
+    
+    Dim clsFileIO   As clsFileIO
+    Set clsFileIO = New clsFileIO
+    
+    clsFileIO.openFileForAppend (CurrentProject.Path & "\Fields.txt")
+    
+    'カレントデータベースを変数に代入する
+    Set myDB = CurrentDb
+    
+    For Each myTables In myDB.TableDefs
+        If Left(myTables.Name, 2) <> "MS" Then
+            Set myTableDef = myDB.TableDefs(myTables.Name)
+            For Each myFields In myTableDef.Fields
+                clsFileIO.outputLine myTableDef.Name & vbTab & myFields.Name
+            Next
+            Set myTableDef = Nothing
+        End If
+    Next
+    
+    clsFileIO.closeFile
+    Set myDB = Nothing
+    
+End Sub
